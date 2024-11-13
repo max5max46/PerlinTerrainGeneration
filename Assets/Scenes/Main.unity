@@ -218,10 +218,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a2acc99ef46397419baa4c0535e901d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dimX: 100
-  dimZ: 100
-  perlinFrequency: 20
+  dimX: 200
+  dimZ: 200
+  perlinScale: 10
+  perlinRange: 10
   verticePointPrefab: {fileID: 958420854198144742, guid: 1755cc225d6f22246b656d349c08a872, type: 3}
+  canSeeVertices: 0
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -351,7 +353,7 @@ Camera:
   m_GameObject: {fileID: 963194225}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2

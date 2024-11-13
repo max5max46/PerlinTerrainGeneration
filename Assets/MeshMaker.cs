@@ -8,10 +8,14 @@ public class MeshMaker : MonoBehaviour
     [Header("Properties")]
     [SerializeField] private int dimX;
     [SerializeField] private int dimZ;
-    [SerializeField] private float perlinFrequency;
+    [SerializeField] private float perlinScale;
+    [SerializeField] private float perlinRange;
 
     [Header("References")]
     [SerializeField] private GameObject verticePointPrefab;
+
+    [Header("Debug")]
+    [SerializeField] private bool canSeeVertices;
 
     private Mesh mesh;
 
@@ -26,10 +30,9 @@ public class MeshMaker : MonoBehaviour
 
         CreateMesh();
 
-        foreach (Vector3 vertice in vertices)
-        {
-            Instantiate(verticePointPrefab, vertice, Quaternion.Euler(0, 0, 0));
-        }
+        if (canSeeVertices)
+            foreach (Vector3 vertice in vertices)
+                Instantiate(verticePointPrefab, vertice, Quaternion.Euler(0, 0, 0));
 
         UpdateMesh();
     }
@@ -49,8 +52,10 @@ public class MeshMaker : MonoBehaviour
         for (int z = 0; z < dimZ; z++)
             for (int x = 0; x < dimX; x++)
             {
-                vertices[index] = new Vector3(x, Mathf.PerlinNoise((float)x / dimX * perlinFrequency, (float)z / dimZ * perlinFrequency) * 10, z);
-                Debug.Log(Mathf.PerlinNoise((float)x / dimX * perlinFrequency, (float)z / dimZ * perlinFrequency));
+                float perlinX = (float)x / dimX * perlinScale;
+                float perlinY = (float)z / dimZ * perlinScale;
+
+                vertices[index] = new Vector3(x, ((Mathf.PerlinNoise(perlinX, perlinY) * 2) - 1) * perlinRange, z);
 
                 index++;
             }
@@ -84,5 +89,7 @@ public class MeshMaker : MonoBehaviour
 
         mesh.vertices = vertices;
         mesh.triangles = triangles;
+
+        mesh.RecalculateNormals();
     }
 }
