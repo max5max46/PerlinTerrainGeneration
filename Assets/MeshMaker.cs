@@ -8,6 +8,7 @@ public class MeshMaker : MonoBehaviour
     [Header("Properties")]
     [SerializeField] private int dimX;
     [SerializeField] private int dimZ;
+    [SerializeField] private float perlinFrequency;
 
     [Header("References")]
     [SerializeField] private GameObject verticePointPrefab;
@@ -24,6 +25,12 @@ public class MeshMaker : MonoBehaviour
         GetComponent<MeshFilter>().mesh = mesh;
 
         CreateMesh();
+
+        foreach (Vector3 vertice in vertices)
+        {
+            Instantiate(verticePointPrefab, vertice, Quaternion.Euler(0, 0, 0));
+        }
+
         UpdateMesh();
     }
 
@@ -42,14 +49,11 @@ public class MeshMaker : MonoBehaviour
         for (int z = 0; z < dimZ; z++)
             for (int x = 0; x < dimX; x++)
             {
-                vertices[index] = new Vector3(x, 0, z);
+                vertices[index] = new Vector3(x, Mathf.PerlinNoise((float)x / dimX * perlinFrequency, (float)z / dimZ * perlinFrequency) * 10, z);
+                Debug.Log(Mathf.PerlinNoise((float)x / dimX * perlinFrequency, (float)z / dimZ * perlinFrequency));
+
                 index++;
             }
-
-        foreach (Vector3 vertice in vertices)
-        {
-            Instantiate(verticePointPrefab, vertice, Quaternion.Euler(0,0,0));
-        }
 
         triangles = new int[((dimX - 1) * (dimZ - 1)) * 3 * 2];
 
