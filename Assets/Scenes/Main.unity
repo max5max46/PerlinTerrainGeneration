@@ -221,9 +221,9 @@ MonoBehaviour:
   dimX: 200
   dimZ: 200
   perlinScaleMain: 10
-  perlinRangeMain: 10
-  perlinScaleSub: 1
-  perlinRangeSub: 1
+  perlinRangeMain: 20
+  perlinScaleSub: 30
+  perlinRangeSub: 2
   verticePointPrefab: {fileID: 958420854198144742, guid: 1755cc225d6f22246b656d349c08a872, type: 3}
   canSeeVertices: 0
 --- !u!1 &705507993

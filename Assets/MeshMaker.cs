@@ -27,6 +27,7 @@ public class MeshMaker : MonoBehaviour
 
     private Vector3[] vertices;
     private int[] triangles;
+    private Color[] colors;
 
     // Start is called before the first frame update
     void Start()
@@ -51,6 +52,8 @@ public class MeshMaker : MonoBehaviour
 
     void CreateMesh()
     {
+
+        // Calculates All Vertices
         vertices = new Vector3[dimX * dimZ];
 
         int index = 0;
@@ -74,6 +77,8 @@ public class MeshMaker : MonoBehaviour
                 index++;
             }
 
+
+        // Calculates All Triangles
         triangles = new int[((dimX - 1) * (dimZ - 1)) * 3 * 2];
 
         index = 0;
@@ -95,6 +100,31 @@ public class MeshMaker : MonoBehaviour
                 triangles[index] = (x + 1) + ((z + 1) * dimX);
                 index++;
             }
+
+
+        // Calculates All Colors
+        colors = new Color[dimX * dimZ];
+
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            switch (vertices[i].y)
+            {
+                case var n when (n >= 2):
+                    colors[i] = new Color(1, 0, 0);
+                    break;
+
+                case var n when (n < 2 && n > -2):
+                    float blue = 1 - ((vertices[i].y + 2) / 4);
+                    float red = 1 - blue;
+
+                    colors[i] = new Color(red, 0, blue);
+                    break;
+
+                case var n when (n <= -2):
+                    colors[i] = new Color(0, 0, 1);
+                    break;
+            }
+        }
     }
 
     void UpdateMesh()
@@ -103,7 +133,10 @@ public class MeshMaker : MonoBehaviour
 
         mesh.vertices = vertices;
         mesh.triangles = triangles;
+        mesh.colors = colors;
 
+        mesh.RecalculateBounds();
         mesh.RecalculateNormals();
+        mesh.RecalculateTangents();
     }
 }
