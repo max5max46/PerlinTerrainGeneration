@@ -8,8 +8,14 @@ public class MeshMaker : MonoBehaviour
     [Header("Properties")]
     [SerializeField] private int dimX;
     [SerializeField] private int dimZ;
-    [SerializeField] private float perlinScale;
-    [SerializeField] private float perlinRange;
+
+    [Header("Properties for First Perlin Layer")]
+    [SerializeField] private float perlinScaleMain;
+    [SerializeField] private float perlinRangeMain;
+
+    [Header("Properties for Second Perlin Layer")]
+    [SerializeField] private float perlinScaleSub;
+    [SerializeField] private float perlinRangeSub;
 
     [Header("References")]
     [SerializeField] private GameObject verticePointPrefab;
@@ -49,13 +55,21 @@ public class MeshMaker : MonoBehaviour
 
         int index = 0;
 
+        int offsetMain = Random.Range(0, 99999);
+        int offsetSub = Random.Range(0, 99999);
+
         for (int z = 0; z < dimZ; z++)
             for (int x = 0; x < dimX; x++)
             {
-                float perlinX = (float)x / dimX * perlinScale;
-                float perlinY = (float)z / dimZ * perlinScale;
+                float perlinX = (float)x / dimX * perlinScaleMain + offsetMain;
+                float perlinY = (float)z / dimZ * perlinScaleMain + offsetMain;
 
-                vertices[index] = new Vector3(x, ((Mathf.PerlinNoise(perlinX, perlinY) * 2) - 1) * perlinRange, z);
+                vertices[index] = new Vector3(x, ((Mathf.PerlinNoise(perlinX, perlinY) * 2) - 1) * perlinRangeMain, z);
+
+                perlinX = (float)x / dimX * perlinScaleSub + offsetSub;
+                perlinY = (float)z / dimZ * perlinScaleSub + offsetSub;
+
+                vertices[index] = new Vector3(x, vertices[index].y + ((Mathf.PerlinNoise(perlinX, perlinY) * 2) - 1) * perlinRangeSub, z);
 
                 index++;
             }

@@ -220,8 +220,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dimX: 200
   dimZ: 200
-  perlinScale: 10
-  perlinRange: 10
+  perlinScaleMain: 10
+  perlinRangeMain: 10
+  perlinScaleSub: 1
+  perlinRangeSub: 1
   verticePointPrefab: {fileID: 958420854198144742, guid: 1755cc225d6f22246b656d349c08a872, type: 3}
   canSeeVertices: 0
 --- !u!1 &705507993
