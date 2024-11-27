@@ -29,25 +29,52 @@ public class MeshMaker : MonoBehaviour
     private int[] triangles;
     private Color[] colors;
 
+    private List<GameObject> verticePoints;
+
     // Start is called before the first frame update
     void Start()
     {
+        verticePoints = new List<GameObject>();
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
 
         CreateMesh();
 
+        UpdateMesh();
+    }
+
+    public void RegenerateMesh()
+    {
+        vertices = new Vector3[0];
+        triangles = new int[0];
+        colors = new Color[0];
+
+        CreateMesh();
+
         if (canSeeVertices)
-            foreach (Vector3 vertice in vertices)
-                Instantiate(verticePointPrefab, vertice, Quaternion.Euler(0, 0, 0));
+            ShowVertices();
 
         UpdateMesh();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ShowVertices(bool destroyVerticePoints = false)
     {
-        
+        if (verticePoints.Count > 0)
+        {
+            foreach (GameObject verticePoint in verticePoints)
+                Destroy(verticePoint);
+
+            verticePoints = new List<GameObject>();
+        }
+
+        if (!destroyVerticePoints)
+        {
+            foreach (Vector3 vertice in vertices)
+            {
+                GameObject verticePoint = Instantiate(verticePointPrefab, vertice, Quaternion.Euler(0, 0, 0));
+                verticePoints.Add(verticePoint);
+            }
+        }
     }
 
     void CreateMesh()
@@ -109,19 +136,26 @@ public class MeshMaker : MonoBehaviour
         {
             switch (vertices[i].y)
             {
-                case var n when (n >= 2):
-                    colors[i] = new Color(1, 0, 0);
+                case var n when (n >= perlinRangeMain):
+                    colors[i] = new Color(0, 0, 1);
                     break;
 
-                case var n when (n < 2 && n > -2):
-                    float blue = 1 - ((vertices[i].y + 2) / 4);
-                    float red = 1 - blue;
+                case var n when (n < perlinRangeMain && n >= 0):
+                    float red = 1 - (vertices[i].y / perlinRangeMain);
+                    float blue = 1 - red;
 
                     colors[i] = new Color(red, 0, blue);
                     break;
 
-                case var n when (n <= -2):
-                    colors[i] = new Color(0, 0, 1);
+                case var n when (n < 0 && n > -perlinRangeMain):
+                    float red2 = 1 - (-vertices[i].y / perlinRangeMain);
+                    float Green = 1 - red2;
+
+                    colors[i] = new Color(red2, Green, 0);
+                    break;
+
+                case var n when (n <= -perlinRangeMain):
+                    colors[i] = new Color(0, 1, 0);
                     break;
             }
         }
@@ -138,5 +172,19 @@ public class MeshMaker : MonoBehaviour
         mesh.RecalculateBounds();
         mesh.RecalculateNormals();
         mesh.RecalculateTangents();
+    }
+
+    public void ToggleVerticePoints()
+    {
+        if (!canSeeVertices)
+        {
+            canSeeVertices = true;
+            ShowVertices();
+        }
+        else
+        {
+            canSeeVertices = false;
+            ShowVertices(true);
+        }
     }
 }
